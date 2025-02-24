@@ -11,16 +11,25 @@ class ClassNominaleSerializer(serializers.ModelSerializer):
         model = ClasseNominale
         fields = ['id', 'nom', 'description']
 
+
+class ExempleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Exemple
+        fields = ['id', 'phrase_eton', 'phrase_francais', 'prononciation']
+
+
 class TraductionSerializer(serializers.ModelSerializer):
+    exemples = ExempleSerializer(many=True, read_only=True)
+
     class Meta:
         model = Traduction
-        fields = ['id', 'mot_francais', 'definition', 'image', 'phrase_eton', 'phrase_francais', 'prononciation']
+        fields = ['id', 'mot_francais', 'definition', 'image', 'exemples']
 
 
 class SimpleMotEtonSerializer(serializers.ModelSerializer):
     class Meta:
         model = MotEton
-        fields = ['id', 'mot_eton', 'pluriel', 'prononciation']
+        fields = ['id', 'mot_eton', 'pluriel', 'sens_litteral', 'prononciation']
 
 class MotEtonSerializer(serializers.ModelSerializer):
     class_grammaticale = ClasseGrammaticaleSerializer()
@@ -31,7 +40,7 @@ class MotEtonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MotEton
-        fields = ['id', 'mot_eton', 'pluriel', 'class_grammaticale', 'classe_nominale', 'mot_reference', 'synonyme', 'prononciation', 'traductions']
+        fields = ['id', 'mot_eton', 'pluriel', 'class_grammaticale', 'sens_litteral', 'classe_nominale', 'mot_reference', 'synonyme', 'prononciation', 'traductions']
 
     def get_mot_reference(self, obj):
         return SimpleMotEtonSerializer(obj.mot_reference.all(), many=True).data

@@ -1,10 +1,20 @@
 from django.contrib import admin
-from .models import classeGrammaticale, ClasseNominale, MotEton, Traduction
+from .models import classeGrammaticale, ClasseNominale, MotEton, Traduction, Exemple
 
 # Register your models here. 
+class ExempleInline(admin.TabularInline):
+    model = Exemple
+    extra = 1
+
 class TraductionInline(admin.TabularInline):
     model = Traduction
-    extra = 2
+    extra = 2 
+
+
+class TraductionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'mot', 'mot_francais')
+    list_display_links = ('id', 'mot')
+    inlines = [ExempleInline]
 
 class ClassNominaleAdmin(admin.ModelAdmin):
     list_display = ('id', 'nom', 'description')
@@ -29,6 +39,8 @@ class MotEtonAdmin(admin.ModelAdmin):
 admin.site.register(classeGrammaticale, classeGrammaticaleAdmin)
 
 admin.site.register(MotEton, MotEtonAdmin)
+
+admin.site.register(Traduction, TraductionAdmin)
 
 admin.site.register(ClasseNominale, ClassNominaleAdmin)
 
